@@ -1,0 +1,93 @@
+\documentclass{article}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning}
+
+\tikzstyle{startstop} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=red!30]
+\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=orange!30]
+\tikzstyle{decision} = [diamond, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=green!30]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
+\begin{document}
+
+\begin{tikzpicture}[node distance=2.5cm]
+
+% Inpatient Flowchart
+\node (start) [startstop] {Start};
+\node (registration) [process, below of=start] {Patient Registration};
+\node (triage) [process, below of=registration] {Triage and Initial Assessment};
+\node (decide) [decision, below of=triage] {Admit to Inpatient?};
+
+\node (inpatient) [startstop, below of=decide, yshift=-3cm] {Inpatient Journey};
+\node (initial) [process, below of=inpatient] {Initial Diagnostics and Tests};
+\node (treatment) [process, below of=initial] {Treatment Plan and Execution};
+\node (monitor) [process, below of=treatment] {Continuous Monitoring};
+\node (discharge) [process, below of=monitor] {Discharge Planning};
+\node (sickleave) [process, below of=discharge] {Scheduling Sick Leave};
+\node (sendinfo) [process, below of=sickleave] {Send Info via Text/WhatsApp};
+\node (followup) [process, below of=sendinfo] {Post-Discharge Follow-up};
+\node (recovery) [process, below of=followup] {Patient Recovery Journey};
+\node (survey) [process, below of=recovery] {Patient Satisfaction Survey};
+\node (end) [startstop, below of=survey] {End};
+
+% Outpatient Flowchart
+\node (outpatient) [startstop, right of=decide, xshift=5cm] {Outpatient Journey};
+\node (consult) [process, below of=outpatient] {Consultation};
+\node (tests) [process, below of=consult] {Diagnostics and Tests};
+\node (result) [decision, below of=tests] {Further Treatment Required?};
+\node (treatment_op) [process, below of=result, yshift=-3cm] {Outpatient Treatment};
+\node (followup_op) [process, below of=treatment_op] {Follow-up Appointment};
+\node (sickleave_op) [process, below of=followup_op] {Scheduling Sick Leave};
+\node (sendinfo_op) [process, below of=sickleave_op] {Send Info via Text/WhatsApp};
+\node (recovery_op) [process, below of=sendinfo_op] {Patient Recovery Journey};
+\node (survey_op) [process, below of=recovery_op] {Patient Satisfaction Survey};
+
+% Arrows for Inpatient
+\draw [arrow] (start) -- (registration);
+\draw [arrow] (registration) -- (triage);
+\draw [arrow] (triage) -- (decide);
+\draw [arrow] (decide) -- node[anchor=east] {Yes} (inpatient);
+\draw [arrow] (inpatient) -- (initial);
+\draw [arrow] (initial) -- (treatment);
+\draw [arrow] (treatment) -- (monitor);
+\draw [arrow] (monitor) -- (discharge);
+\draw [arrow] (discharge) -- (sickleave);
+\draw [arrow] (sickleave) -- (sendinfo);
+\draw [arrow] (sendinfo) -- (followup);
+\draw [arrow] (followup) -- (recovery);
+\draw [arrow] (recovery) -- (survey);
+\draw [arrow] (survey) -- (end);
+
+% Arrows for Outpatient
+\draw [arrow] (decide) -- node[anchor=south] {No} (outpatient);
+\draw [arrow] (outpatient) -- (consult);
+\draw [arrow] (consult) -- (tests);
+\draw [arrow] (tests) -- (result);
+\draw [arrow] (result) -- node[anchor=east] {Yes} (treatment_op);
+\draw [arrow] (result) -- node[anchor=south] {No} (followup_op);
+\draw [arrow] (treatment_op) -- (followup_op);
+\draw [arrow] (followup_op) -- (sickleave_op);
+\draw [arrow] (sickleave_op) -- (sendinfo_op);
+\draw [arrow] (sendinfo_op) -- (recovery_op);
+\draw [arrow] (recovery_op) -- (survey_op);
+
+% Integration Points
+\node (erp1) [process, right of=registration, xshift=5cm] {Odoo ERP: Patient Registration};
+\node (erp2) [process, right of=treatment, xshift=5cm] {Odoo ERP: Treatment Scheduling};
+\node (erp3) [process, right of=monitor, xshift=5cm] {Odoo ERP: Inventory Management};
+\node (erp4) [process, right of=discharge, xshift=5cm] {Odoo ERP: Billing and Insurance};
+\node (erp5) [process, right of=followup, xshift=5cm] {Odoo ERP: Patient Follow-up};
+\node (erp6) [process, right of=recovery, xshift=5cm] {Odoo ERP: Recovery Monitoring};
+\node (erp7) [process, right of=survey, xshift=5cm] {Odoo ERP: Feedback Management};
+
+% Arrows for Odoo Integration
+\draw [arrow] (erp1) -- (registration);
+\draw [arrow] (erp2) -- (treatment);
+\draw [arrow] (erp3) -- (monitor);
+\draw [arrow] (erp4) -- (discharge);
+\draw [arrow] (erp5) -- (followup);
+\draw [arrow] (erp6) -- (recovery);
+\draw [arrow] (erp7) -- (survey);
+
+\end{tikzpicture}
+
+\end{document}
